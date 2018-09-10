@@ -18,9 +18,20 @@ class TANKS_API ATankPlayerController : public APlayerController
 public:
 	void BeginPlay() override;
 	void Tick(float DeltaTime) override;
-	ATank* GetControlledTank() const;
-	void AimTowardsCrosshair();
 
 private:
-	bool GetSightRayHitLocation(FVector& OutHitLocation);
+	UPROPERTY(EditAnywhere)
+	float CrosshairXLocation = 0.5f;
+
+	UPROPERTY(EditAnywhere)
+	float CrosshairYLocation = 0.333f;
+
+	UPROPERTY(EditAnywhere)
+	float LineTraceRange = 1000000.f;
+
+	ATank* GetControlledTank() const;
+	void AimTowardsCrosshair();
+	bool GetSightRayHitLocation(FVector&);
+	bool GetLookDirection(FVector2D, FVector&) const;
+	bool GetLookVectorHitLocation(FVector&, FVector);
 };

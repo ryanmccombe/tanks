@@ -14,6 +14,8 @@ class TANKS_API ATankAIController : public AAIController
 	GENERATED_BODY()
 
 	void BeginPlay() override;
+	void Tick(float DeltaTime) override;
+
 	ATank* GetControlledTank();
 	ATank* GetPlayerTank();
 	
