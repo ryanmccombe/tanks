@@ -3,6 +3,7 @@
 #include "TankAimingComponent.h"
 #include "GameFramework/Actor.h"
 #include "TankBarrel.h"
+#include "TankTurret.h"
 #include "Kismet/GameplayStatics.h"
 #include "Engine/World.h"
 
@@ -19,6 +20,10 @@ UTankAimingComponent::UTankAimingComponent()
 
 void UTankAimingComponent::SetBarrelReference(UTankBarrel* BarrelToSet) {
 	Barrel = BarrelToSet;
+}
+
+void UTankAimingComponent::SetTurretReference(UTankTurret* TurretToSet) {
+	Turret = TurretToSet;
 }
 
 
@@ -61,9 +66,6 @@ void UTankAimingComponent::AimAt(FVector HitLocation, float LaunchSpeed) {
 	if (CanHit) {
 		auto AimDirection = OutLaunchVelocity.GetSafeNormal();
 		MoveBarrelTowards(AimDirection);
-		UE_LOG(LogTemp, Warning, TEXT("%f - %s can hit %s - aiming at %s"), GetWorld()->GetTimeSeconds(), *GetOwner()->GetName(), *HitLocation.ToString(), *AimDirection.ToString())
-	} else {
-		UE_LOG(LogTemp, Warning, TEXT("%s can not hit"), *GetOwner()->GetName())
 	}
 }
 
@@ -72,5 +74,8 @@ void UTankAimingComponent::MoveBarrelTowards(FVector AimRotation) {
 	auto AimAsRotator = AimRotation.Rotation();
 	auto DeltaRotator = AimAsRotator - BarrelRotation;
 
+	UE_LOG(LogTemp, Warning, TEXT("%f - aiming at %s"), GetWorld()->GetTimeSeconds(), *DeltaRotator.ToString())
+
 	Barrel->Elevate(DeltaRotator.Pitch);
+	Turret->Rotate(DeltaRotator.Yaw);
 }
