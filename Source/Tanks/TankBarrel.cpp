@@ -5,7 +5,6 @@
 
 
 void UTankBarrel::Elevate(float RelativeSpeed) {
-	UE_LOG(LogTemp, Warning, TEXT("Barrel elevate called at speed %f"), RelativeSpeed)
 	auto ClampedRelativeSpeed = FMath::Clamp<float>(RelativeSpeed, -1, 1);
 	auto ElevationChange = ClampedRelativeSpeed * MaxDegreesPerSecond * GetWorld()->DeltaTimeSeconds;
 
