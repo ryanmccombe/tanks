@@ -2,6 +2,7 @@
 
 #include "TankAimingComponent.h"
 #include "GameFramework/Actor.h"
+#include "TankBarrel.h"
 #include "Kismet/GameplayStatics.h"
 
 
@@ -15,7 +16,7 @@ UTankAimingComponent::UTankAimingComponent()
 	// ...
 }
 
-void UTankAimingComponent::SetBarrelReference(UStaticMeshComponent* BarrelToSet) {
+void UTankAimingComponent::SetBarrelReference(UTankBarrel* BarrelToSet) {
 	Barrel = BarrelToSet;
 }
 
@@ -49,13 +50,17 @@ void UTankAimingComponent::AimAt(FVector HitLocation, float LaunchSpeed) {
 		OutLaunchVelocity,
 		StartLocation,
 		HitLocation,
-		LaunchSpeed
+		LaunchSpeed,
+		false,
+		0,
+		0,
+		ESuggestProjVelocityTraceOption::DoNotTrace
 	);
 
 	if (CanHit) {
 		auto AimDirection = OutLaunchVelocity.GetSafeNormal();
 		MoveBarrelTowards(AimDirection);
-		UE_LOG(LogTemp, Warning, TEXT("%s can hit - aiming at %s"), *GetOwner()->GetName(), *AimDirection.ToString())
+		UE_LOG(LogTemp, Warning, TEXT("%f - %s can hit %s - aiming at %s"), GetWorld()->GetTimeSeconds(), *GetOwner()->GetName(), *HitLocation.ToString(), *AimDirection.ToString())
 	} else {
 		UE_LOG(LogTemp, Warning, TEXT("%s can not hit"), *GetOwner()->GetName())
 	}
@@ -65,4 +70,6 @@ void UTankAimingComponent::MoveBarrelTowards(FVector AimRotation) {
 	auto BarrelRotation = Barrel->GetForwardVector().Rotation();
 	auto AimAsRotator = AimRotation.Rotation();
 	auto DeltaRotator = AimAsRotator - BarrelRotation;
+
+	Barrel->Elevate(5.f);
 }

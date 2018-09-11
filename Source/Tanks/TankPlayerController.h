@@ -2,10 +2,11 @@
 
 #pragma once
 
-#include "Tank.h"
 #include "CoreMinimal.h"
 #include "GameFramework/PlayerController.h"
 #include "TankPlayerController.generated.h"
+
+class ATank;
 
 /**
  * 
@@ -16,8 +17,8 @@ class TANKS_API ATankPlayerController : public APlayerController
 	GENERATED_BODY()
 	
 public:
-	void BeginPlay() override;
-	void Tick(float DeltaTime) override;
+	virtual void BeginPlay() override;
+	virtual void Tick(float DeltaTime) override;
 
 private:
 	UPROPERTY(EditAnywhere)
