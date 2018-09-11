@@ -4,6 +4,7 @@
 #include "GameFramework/Actor.h"
 #include "TankBarrel.h"
 #include "Kismet/GameplayStatics.h"
+#include "Engine/World.h"
 
 
 // Sets default values for this component's properties
@@ -71,5 +72,5 @@ void UTankAimingComponent::MoveBarrelTowards(FVector AimRotation) {
 	auto AimAsRotator = AimRotation.Rotation();
 	auto DeltaRotator = AimAsRotator - BarrelRotation;
 
-	Barrel->Elevate(5.f);
+	Barrel->Elevate(DeltaRotator.Pitch);
 }
