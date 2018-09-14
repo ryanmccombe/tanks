@@ -10,9 +10,9 @@
 class AProjectile;
 UENUM()
 enum class EFiringStatus : uint8 {
-	Ready,
 	Aiming,
-	Reloading
+	Reloading,
+	Locked
 };
 
 class UTankBarrel;
@@ -34,11 +34,17 @@ public:
 
 protected:
 	UPROPERTY(BlueprintReadOnly, Category = "State")
-	EFiringStatus FiringState = EFiringStatus::Ready;
+	EFiringStatus FiringState = EFiringStatus::Reloading;
 
 private:
 	UTankAimingComponent();
+
+	virtual void BeginPlay() override;
+	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
+
 	void MoveBarrelTowards(FVector);
+
+	bool IsBarrelMoving();
 
 	UPROPERTY(EditDefaultsOnly, Category = "Firing")
 	float LaunchSpeed = 4000.f;
@@ -52,4 +58,5 @@ private:
 	double LastFireTime;
 	UTankBarrel* Barrel = nullptr;
 	UTankTurret* Turret = nullptr;
+	FVector AimDirection;
 };
