@@ -19,6 +19,7 @@ UTankAimingComponent::UTankAimingComponent()
 }
 
 void UTankAimingComponent::Initialise(UTankBarrel* BarrelToSet, UTankTurret* TurretToSet) {
+	UE_LOG(LogTemp, Warning, TEXT("RYAN Initialising"))
 	Barrel = BarrelToSet;
 	Turret = TurretToSet;
 }
@@ -44,6 +45,7 @@ void UTankAimingComponent::TickComponent(float DeltaTime, ELevelTick TickType, F
 
 void UTankAimingComponent::AimAt(FVector HitLocation, float LaunchSpeed) {
 	if (!ensure(Barrel)) { return; }
+	UE_LOG(LogTemp, Warning, TEXT("AimingAt"))
 
 	FVector OutLaunchVelocity;
 	FVector StartLocation = Barrel->GetSocketLocation(FName("Projectile"));
@@ -67,6 +69,9 @@ void UTankAimingComponent::AimAt(FVector HitLocation, float LaunchSpeed) {
 }
 
 void UTankAimingComponent::MoveBarrelTowards(FVector AimRotation) {
+	if (!ensure(Barrel)) { return; }
+	if (!ensure(Turret)) { return; }
+
 	auto BarrelRotation = Barrel->GetForwardVector().Rotation();
 	auto AimAsRotator = AimRotation.Rotation();
 	auto DeltaRotator = AimAsRotator - BarrelRotation;
