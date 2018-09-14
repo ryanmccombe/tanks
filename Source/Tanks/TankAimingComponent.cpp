@@ -6,6 +6,7 @@
 #include "TankTurret.h"
 #include "Kismet/GameplayStatics.h"
 #include "Engine/World.h"
+#include "Projectile.h"
 
 
 // Sets default values for this component's properties
@@ -19,33 +20,12 @@ UTankAimingComponent::UTankAimingComponent()
 }
 
 void UTankAimingComponent::Initialise(UTankBarrel* BarrelToSet, UTankTurret* TurretToSet) {
-	UE_LOG(LogTemp, Warning, TEXT("RYAN Initialising"))
 	Barrel = BarrelToSet;
 	Turret = TurretToSet;
 }
 
-
-// Called when the game starts
-void UTankAimingComponent::BeginPlay()
-{
-	Super::BeginPlay();
-
-	// ...
-	
-}
-
-
-// Called every frame
-void UTankAimingComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
-{
-	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
-
-	// ...
-}
-
-void UTankAimingComponent::AimAt(FVector HitLocation, float LaunchSpeed) {
+void UTankAimingComponent::AimAt(FVector HitLocation) {
 	if (!ensure(Barrel)) { return; }
-	UE_LOG(LogTemp, Warning, TEXT("AimingAt"))
 
 	FVector OutLaunchVelocity;
 	FVector StartLocation = Barrel->GetSocketLocation(FName("Projectile"));
@@ -79,3 +59,22 @@ void UTankAimingComponent::MoveBarrelTowards(FVector AimRotation) {
 	Barrel->Elevate(DeltaRotator.Pitch);
 	Turret->Rotate(DeltaRotator.Yaw);
 }
+
+void UTankAimingComponent::Fire() {
+	if (!ensure(Barrel)) { return; }
+	if (!ensure(ProjectileBlueprint)) { return; }
+
+	bool isReloaded = FPlatformTime::Seconds() - LastFireTime > ReloadTimeInSeconds;
+
+	if (isReloaded) {
+		auto Projectile = GetWorld()->SpawnActor<AProjectile>(
+			ProjectileBlueprint,
+			Barrel->GetSocketLocation(FName("Projectile")),
+			Barrel->GetSocketRotation(FName("Projectile"))
+			);
+
+		Projectile->LaunchProjectile(LaunchSpeed);
+		LastFireTime = FPlatformTime::Seconds();
+	}
+}
+
